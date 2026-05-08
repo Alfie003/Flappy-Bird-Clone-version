@@ -22,6 +22,53 @@
 
 <script>
 
+// 🌐 MOBILE LANDSCAPE LOCK - ADDED HERE
+if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock('landscape').catch(() => {});
+}
+
+let orientationMessage = document.createElement('div');
+orientationMessage.id = 'orientationMsg';
+orientationMessage.innerHTML = `
+    <div style="
+        position:fixed;
+        top:0;
+        left:0;
+        width:100vw;
+        height:100vh;
+        background:rgba(0,0,0,0.9);
+        color:white;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+        z-index:9999;
+        font-family:Arial;
+        text-align:center;
+        font-size:24px;
+    ">
+        <div style="font-size:48px; margin-bottom:20px;">📱</div>
+        <div>Please rotate to <strong>LANDSCAPE</strong></div>
+        <div style="font-size:18px; margin-top:10px; opacity:0.8;">(Turn your phone sideways)</div>
+    </div>
+`;
+
+document.body.appendChild(orientationMessage);
+
+screen.orientation?.addEventListener('change', function() {
+    if (screen.orientation.type.includes('landscape') || window.innerWidth > window.innerHeight) {
+        orientationMessage.style.display = 'none';
+        if (screen.orientation.lock) screen.orientation.lock('landscape');
+    } else {
+        orientationMessage.style.display = 'flex';
+    }
+});
+
+if (window.innerWidth > window.innerHeight || screen.orientation?.type.includes('landscape')) {
+    orientationMessage.style.display = 'none';
+}
+// LANDSCAPE LOCK END
+
 const bird = document.getElementById("bird");
 const gameArea = document.getElementById("gameArea");
 
@@ -36,8 +83,8 @@ const menu =
 
 let birdY = 300;
 let velocity = 0;
-let gravity = 0.25;
-let jumpPower = -6;
+let gravity = 0.5;
+let jumpPower = -9;
 let gameRunning = true;
 
 let score = 0;
@@ -143,7 +190,7 @@ function updatePipes(){
 
     pipes.forEach((pipe,index)=>{
 
-        pipe.x -= 3;
+        pipe.x -= 1.2;
 
         pipe.top.style.left =
             pipe.x + "px";
